@@ -163,6 +163,7 @@ app.get("/logout", (req, res) => {
       error = "Could not log you out at this time. Please try again later";
       res.render("wrongDetails", { error });
     } else {
+      onlineUser = "";
       res.redirect("/");
     }
   });
