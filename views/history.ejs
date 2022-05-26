@@ -1,0 +1,44 @@
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+  crossorigin="anonymous"
+/>
+
+<% if (onlineUser) { %> <%- include("loginNav") -%> <% } else { %> <%-
+include("navbar") -%> <% } %> <% if (history.length > 0) { %>
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-6 container">
+      <table class="table border shadow-lg table-striped">
+        <thead>
+          <tr>
+            <td>S/N</td>
+            <td>Guy's Name</td>
+            <td>Lady's Name</td>
+            <td>Score</td>
+          </tr>
+        </thead>
+        <tbody>
+          <% history.map((val, i) => { %>
+          <tr>
+            <td><%= i+1 %></td>
+            <td><%= val.firstname %></td>
+            <td><%= val.secondname %></td>
+            <td><%= val.score %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<% } else { %>
+<div class="container">
+  <div class="row">
+    <div class="col-6 container">
+      <h4 class="display-5">No history yet.</h4>
+    </div>
+  </div>
+</div>
+<% } %>

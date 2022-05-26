@@ -7,7 +7,7 @@ const port = 5000;
 const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
-let newScore = "dshdjkhds";
+let newScore = "";
 const URI = `mongodb+srv://Excellence:oladipupomichael9@cluster0.mzchd.mongodb.net/love_calculator?retryWrites=true&w=majority`;
 mongoose.connect(URI, (err) => {
   if (err) {
@@ -19,9 +19,10 @@ mongoose.connect(URI, (err) => {
 
 let onlineUser;
 let error;
+let history;
 
 const historySchema = mongoose.Schema({
-  id: String,
+  user_id: String,
   firstname: String,
   secondname: String,
   score: Number,
@@ -38,13 +39,17 @@ const UserModel = mongoose.model("users_tbs", userSchema);
 const HistoryModel = mongoose.model("history_tbs", historySchema);
 
 // const calculateScore = () => {
-  
+
 //   // console.log(newScore);
 // };
 
 app.get("/", (req, res) => {
+  res.render("index", { onlineUser });
+});
+
+app.get("/calculator", (req, res) => {
   if (onlineUser) {
-    res.render("index");
+    res.render("calculator", { newScore, onlineUser });
   } else {
     res.redirect("/login");
   }
@@ -53,15 +58,16 @@ app.get("/", (req, res) => {
 app.post("/calculate", (req, res) => {
   newScore = Math.floor(Math.random() * 100);
   let history = req.body;
-  history.id = onlineUser._id;
+  history.user_id = onlineUser._id;
+  history.score = newScore;
   const form = new HistoryModel(history);
   form.save((err) => {
     if (err) {
       error =
         "Cannot calculate the sore for you at the moment. Please try again later";
-      res.render("wrongDetails", { error });
+      res.render("wrongDetails", { error, onlineUser });
     } else {
-      res.redirect("/");
+      res.redirect("/calculator");
     }
   });
 });
@@ -76,7 +82,7 @@ app.post("/login", (req, res) => {
     (err, result) => {
       if (err) {
         error = "Error making this request";
-        res.render("wrongDetails", { error });
+        res.render("wrongDetails", { error, onlineUser });
       } else {
         if (result.length == 0) {
           // console.log(result);
@@ -91,10 +97,10 @@ app.post("/login", (req, res) => {
             (newErr, newRes) => {
               if (newErr) {
                 error = "Error making logging in. Please try again later";
-                res.render("wrongDetails", { error });
+                res.render("wrongDetails", { error, onlineUser });
               } else {
                 onlineUser = newRes;
-                res.redirect("/");
+                res.redirect("/calculator");
               }
             }
           );
@@ -114,17 +120,17 @@ app.post("/register", (req, res) => {
   UserModel.find({ email: userDetails.email }, (err, result) => {
     if (err) {
       error = "Error making this request";
-      res.render("wrongDetails", { error });
+      res.render("wrongDetails", { error, onlineUser });
     } else {
       if (result.length > 0) {
         // error = "Email already exist";
-        res.render("wrongDetails", { error });
+        res.render("wrongDetails", { error, onlineUser });
       } else {
         const form = new UserModel(userDetails);
         form.save((err) => {
           if (err) {
             error = "Error submitting this form. Please try again later";
-            res.render("wrongDetails", { error });
+            res.render("wrongDetails", { error, onlineUser });
           } else {
             res.redirect("/login");
           }
@@ -134,11 +140,21 @@ app.post("/register", (req, res) => {
   });
 });
 
-// app.get("/error", (req, res) => {
-//   res.render("wrongDetails", { error })
-// })
+app.get("/history", (req, res) => {
+  HistoryModel.find({ user_id: onlineUser._id }, (err, result) => {
+    if (err) {
+      error = "Error getting your hisotory. Please try again later";
+      res.render("wrongDetails", { error, onlineUser });
+    } else {
+      if (result.length > 0) {
+        history = result;
+        res.render("history", { history, onlineUser });
+      }
+    }
+  });
+});
 
-app.post("/logout", (req, res) => {
+app.get("/logout", (req, res) => {
   const logUser = onlineUser;
   logUser.online = false;
   UserModel.findByIdAndUpdate(logUser.id, logUser, (err, result) => {
@@ -147,9 +163,7 @@ app.post("/logout", (req, res) => {
       error = "Could not log you out at this time. Please try again later";
       res.render("wrongDetails", { error });
     } else {
-      console.log(logUser);
-      console.log(result);
-      res.redirect("/login");
+      res.redirect("/");
     }
   });
 });

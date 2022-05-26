@@ -5,45 +5,37 @@
   crossorigin="anonymous"
 />
 
-<div class="container mt-5">
+<% if (onlineUser) { %> <%- include("loginNav") -%> <% } else { %> <%-
+include("navbar") -%> <% } %>
+
+<div class="container">
   <div class="row">
     <div class="col-6 container">
-      <table class="table-striped border table shadow-lg">
-        <thead>
-          <tr>
-            <td>First name</td>
-            <td>Second name</td>
-            <td>Score</td>
-          </tr>
-        </thead>
-        <form action="/calculate" method="post">
-          <tbody>
-            <tr>
-              <td>
-                <input type="text" placeholder="Guy's name" name="firstname" />
-              </td>
-              <td>
-                <input
-                  type="text"
-                  placeholder="Lady's name"
-                  name="secondname"
-                />
-              </td>
-              <td><%= newScore %> </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="3">
-                <button type="submit" class="btn btn-info w-100">Click</button>
-              </td>
-            </tr>
-          </tfoot>
-        </form>
-      </table>
-      <form action="/logout" method="post">
-        <button class="btn btn-danger">Logout</button>
-      </form>
+      <h4 class="display-5">Love Calculator</h4>
+      <div class="my-3">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum, eaque
+        laudantium voluptatem expedita ea earum est? Laboriosam nulla numquam
+        aperiam sed ipsa mollitia porro est, fugit temporibus earum culpa
+        soluta.
+      </div>
+      <div class="my-3">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum, eaque
+        laudantium voluptatem expedita ea earum est? Laboriosam nulla numquam
+        aperiam sed ipsa mollitia porro est, fugit temporibus earum culpa
+        soluta.
+      </div>
+      <div class="my-3">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum, eaque
+        laudantium voluptatem expedita ea earum est? Laboriosam nulla numquam
+        aperiam sed ipsa mollitia porro est, fugit temporibus earum culpa
+        soluta.
+      </div>
+      <div class="my-3">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum, eaque
+        laudantium voluptatem expedita ea earum est? Laboriosam nulla numquam
+        aperiam sed ipsa mollitia porro est, fugit temporibus earum culpa
+        soluta.
+      </div>
     </div>
   </div>
 </div>
